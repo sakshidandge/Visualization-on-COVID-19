@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[6]:
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+plt.style.use('fivethirtyeight')
+
+df = pd.read_csv('https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv',parse_dates=["Date"])
+df['Total Cases']=df[['Confirmed','Recovered','Deaths']].sum(axis=1)
+
+
+# In[7]:
+
+
+# worldwide cases
+
+worldwide_df =df.groupby(['Date']).sum()
+w= worldwide_df.plot(figsize=[8,5])
+w.set_xlabel('Date')
+w.set_ylabel('No.of cases')
+w.title.set_text('Covid 19 Worldwide')
+
+plt.show()
+                 
+
+
+# In[8]:
+
+
+us_df = df[df['Country']=='India'].groupby(['Date']).sum()
+
+
+fig = plt.figure(figsize=(13,5))                
+ax = fig.add_subplot(111)
+
+ax.plot(worldwide_df[['Total Cases']],label='Worldwide')
+ax.plot(us_df[['Total Cases']],label ='India')
+ax.set_xlabel('Date')
+ax.set_ylabel('no.of cases worldwide')
+ax.title.set_text('Worldwide vs India COVID Insights')
+
+plt.legend(loc ='upper left')
+plt.show()
+
+
+# In[18]:
+
+
+
+us_df['Daily Confirmed']= us_df['Confirmed'].sub(us_df ['Confirmed'].shift())
+us_df['Daily Deaths']=us_df['Deaths'].sub(us_df['Deaths'].shift())
+
+
+fig=plt.figure(figsize=(20,8))
+ax = fig.add_subplot(111)
+
+ax.bar(us_df['Date'], us_df['Daily Confirmed'], color='b',label = 'Daily Confirmed')
+ax.bar(us_df['Date'], us_df['Daily Deaths'],color='r',label = 'Daily Deaths')
+
+ax.set_xlabel('Date')
+ax.set_ylabel('No.of Confirmed Cases and Deaths')
+ax.title.set_text('Confirmed Cases and Deaths in India')
+
+plt.legend(loc ='upper left')
+
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
